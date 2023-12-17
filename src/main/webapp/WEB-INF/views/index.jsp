@@ -14,6 +14,7 @@
             for(User u:users) {
         %>
             <h1>Id: <%= u.getId() %> and Name: <%= u.getName() %></h1>
+            
         <% } %>
  	<h1> username: <%= users.get(0) %> </h1>
 

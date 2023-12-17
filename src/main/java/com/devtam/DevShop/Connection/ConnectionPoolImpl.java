@@ -30,8 +30,8 @@ public class ConnectionPoolImpl implements ConnectionPool{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        this.url = "jdbc:mysql://localhost:3306/it6020003_data";
-        this.username = "it602003_tam";
+        this.url = "jdbc:mysql://localhost:3306/devshop";
+        this.username = "devshop";
         this.password = "123456";
 
         //xác định bộ nhớ
