@@ -32,22 +32,14 @@ public class HomeController{
     @GetMapping(value = {"/" ,"/home"})
     public String check(HttpSession session)  {
         List<User> users = new ArrayList<>();
-        users.add(new User(1,"hadwaf"));
-        users.add(new User(2,"gdhehy"));
-        users.add(new User(6,"sfnhsnjtfrdfg"));
-        users.add(new User(4,"ljkdfgdzgfhsdfsdf"));
-        users.add(new User(3,"ghygmjrdsff"));
+
         session.setAttribute("users", users);
         return "index";
     }
     @GetMapping(value = "/model")
     public String checkModel(Model model) {
         List<User> users = new ArrayList<>();
-        users.add(new User(1,"hadwaf"));
-        users.add(new User(2,"gdhehy"));
-        users.add(new User(6,"sfnhsnjtfrdfg"));
-        users.add(new User(4,"ljkdfgdzgfhsdfsdf"));
-        users.add(new User(3,"ghygmjrdsff"));
+
         model.addAttribute("users", users);
         return "indexMol";
     }
@@ -55,13 +47,7 @@ public class HomeController{
     @RequestMapping(value = "/modelView")
     public ModelAndView checkModelView() {
         ModelAndView modelAndView = new ModelAndView();
-        List<User> users = new ArrayList<>();
-        users.add(new User(1,"hadwaf"));
-        users.add(new User(2,"gdhehy"));
-        users.add(new User(6,"sfnhsnjtfrdfg"));
-        users.add(new User(4,"ljkdfgdzgfhsdfsdf"));
-        users.add(new User(3,"ghygmjrdsff"));
-        modelAndView.addObject("users", users);
+
         modelAndView.setViewName("indexMolV");
         return modelAndView;
     }
