@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import com.devtam.DevShop.Connection.ConnectionPool;
 import com.devtam.DevShop.Connection.ConnectionPoolImpl;
+import com.devtam.DevShop.Entity.Category;
+import com.devtam.DevShop.Entity.Product;
 import com.devtam.DevShop.Entity.ProductImage;
 import com.devtam.DevShop.Process.CategoryProcess;
 @Repository
@@ -70,6 +72,31 @@ public class CategoryProcessImpl implements CategoryProcess {
 			}
 		}
 		return items;
+	}
+	@Override
+	public Category getCategoryById(int id) {
+		Category item = new Category();
+		
+		String sql = "SELECT * FROM category ";
+		sql += "WHERE category.id = ?";
+		try {
+			PreparedStatement pre = this.con.prepareStatement(sql);
+			pre.setInt(1, id);
+			ResultSet rs = pre.executeQuery();
+			if(rs != null) {
+				while(rs.next()) {					
+					item.setId(rs.getInt("id"));
+					item.setCategory_name(rs.getString("category_name"));
+				}
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return item;
 	}
 
 }

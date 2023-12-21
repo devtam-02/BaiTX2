@@ -7,5 +7,5 @@ import com.devtam.DevShop.Entity.Product;
 public interface ProductProcess {
 	public ArrayList<Product> getListProducts(String similar, byte total);
 	public Product getProduct(int id);
-	public boolean addProduct(Product item);
+	public int addProduct(Product item);
 }
