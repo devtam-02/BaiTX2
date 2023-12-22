@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.devtam.DevShop.Connection.ConnectionPool;
 import com.devtam.DevShop.Connection.ConnectionPoolImpl;
@@ -20,6 +22,9 @@ import com.devtam.DevShop.Process.ProductImageProcess;
 public class ProductImageProcessImpl implements ProductImageProcess {
 	//kết nối để làm việc với csdl
 			private Connection con;
+			
+			@Autowired
+			private CloudinaryProcess cloudinaryProcess;
 			
 			//bộ quản lý kết nối riêng section
 			private ConnectionPool cp;
@@ -127,4 +132,40 @@ public class ProductImageProcessImpl implements ProductImageProcess {
 		return items;
 	}
 
+	@Override
+	public boolean addImages(int productId, MultipartFile[] files) {
+		boolean savedToDb =false;
+		for (MultipartFile y : files) {
+			String urlImg = cloudinaryProcess.upload(y);
+			savedToDb = save(productId,urlImg);
+		}
+		return savedToDb;
+	}
+	public boolean save(int productId, String imageUrl) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("INSERT INTO product_image(");
+		sql.append("url_image, product_id) ");
+		sql.append("VALUES(?,?);"); 
+
+		try {
+			PreparedStatement pre = this.con.prepareStatement(sql.toString());
+			pre.setString(1,imageUrl);
+			pre.setInt(2,productId);
+
+			//thực thi
+			int result = pre.executeUpdate();
+			if (result==0) {
+				this.con.rollback();
+				return false;
+			}
+			
+			//Ghi nhận thực thi sau cùng
+			this.con.commit();
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
