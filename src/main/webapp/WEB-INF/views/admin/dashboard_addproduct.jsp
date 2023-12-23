@@ -115,7 +115,7 @@
 					</ul>
 
 					<ul data-submenu-title="Products">
-						<li><a href="<c:url value="/"/>admin/dashboard-myproducts"><i
+						<li><a href="<c:url value="/"/>admin/dashboard-myproduct"><i
 								class="sl sl-icon-layers"></i> My products</a></li>
 						<li class="active"><a
 							href="<c:url value="/"/>admin/dashboard-addproduct"><i
@@ -140,7 +140,7 @@
 	================================================== -->
 
 			<div class="dashboard-content">
-				<form action="<c:url value="/"/>admin/dashboard-addproduct"
+				<form id="form-post-product" onsubmit="event.preventDefault();" action="<c:url value="/"/>admin/dashboard-addproduct"
 					method="post" enctype="multipart/form-data">
 					<!-- Titlebar -->
 					<div id="titlebar">
@@ -263,7 +263,7 @@
 								</div>
 								<!-- Section / End -->
 
-								<button class="button preview">
+								<button class="button preview" onclick="submitForm()">
 									Add New Product <i class="fa fa-arrow-circle-right"></i>
 								</button>
 							</div>
@@ -311,6 +311,7 @@
 
 	<!-- Opening hours added via JS (this is only for demo purpose) -->
 	<script>
+	
       $(".opening-day.js-demo-hours .chosen-select").each(function () {
         $(this).append(
           "" +
@@ -349,13 +350,15 @@
 		src="<c:url value="/"/>assets/scripts/dropzone.js"></script>
 
 	<script>
+	var cImage = false;
       jQuery(document).ready(function () {
+    	//$('#form-post-product') 
         ImgUpload();
         checkName();
         checkPrice();
         checkAvailable();
       });
-
+		
       function ImgUpload() {
         var imgWrap = "";
         var imgArray = [];
@@ -374,7 +377,8 @@
               }
 
               if (imgArray.length > maxLength) {
-                return false;
+            	cImage = false;
+              	return false;
               } else {
                 var len = 0;
                 for (var i = 0; i < imgArray.length; i++) {
@@ -383,8 +387,10 @@
                   }
                 }
                 if (len > maxLength) {
-                  return false;
+                	cImage = true;
+                  	return false;
                 } else {
+                	cImage = true;
                   imgArray.push(f);
 
                   var reader = new FileReader();
@@ -406,7 +412,7 @@
             });
             });
           });
-        };
+        
         
         $("body").on("click", ".upload__img-close", function (e) {
           var file = $(this).parent().data("file");
@@ -415,21 +421,27 @@
               imgArray.splice(i, 1);
               break;
             }
-          }
+          }         
           $(this).parent().parent().remove();
+          if(imgArray.length == 0) cImage=false;
         });
-      
+      };
+      var cName = false, cPrice = false, cAval = false;
       function checkName() {
         $('input[name="product_name"]').on("change blur", function (e) {
           var inputValue = $(this).val(); // Lấy giá trị của ô input
           if (inputValue.length < 5) {
+       		cName = false;
             // Kiểm tra điều kiện nhập vào
             $(".product_name_alert").text(
               "Product name must be more than 5 characters"
             );
             //$(this).val("");
             //$(this).focus(); // Đưa con trỏ vào ô input
-          } else $(".product_name_alert").text("");
+          } else{
+        	  cName = true;
+        	  $(".product_name_alert").text("");
+          }
         });
       }
       function checkPrice() {
@@ -437,10 +449,14 @@
           var inputValue = $(this).val(); // Lấy giá trị của ô input
           var numberRegex = /^\d+$/;
           if (!numberRegex.test(inputValue)) {
+        	  cPrice = false;
             $(".price_alert").text(
               "Product price can only contain numeric characters and not null"
             );
-          } else $(".price_alert").text("");
+          } else{
+        	  cPrice = true;
+        	  $(".price_alert").text("");
+          }
         });
       }
       function checkAvailable() {
@@ -448,11 +464,50 @@
           var inputValue = $(this).val(); // Lấy giá trị của ô input
           var numberRegex = /^\d+$/;
           if (!numberRegex.test(inputValue)) {
+        	  cAval = false;
             $(".availability_alert").text(
               "Product availability can only contain numeric characters and not null"
             );
-          } else $(".availability_alert").text("");
+          } else{
+        	  cAval = true;
+        	  $(".availability_alert").text("");
+          }
         });
+      }
+      function submitForm(){
+    	  if (cName && cPrice && cAval && cImage){
+    		  swal({
+    			  title: "Xác nhận",
+				  text: "Xác nhận thêm sản phẩm!",
+				  buttons: {
+					  cancel: {
+						    text: "Hủy",
+						    value: null,
+						    visible: true,
+						    className: "",
+						    closeModal: true,
+						  },
+						  confirm: {
+						    text: "Xác nhận",
+						    value: true,
+						    visible: true,
+						    className: "",
+						    closeModal: true
+						  }
+					  },
+				}).then((isConfirm) => {
+					  if(isConfirm){
+						  console.log("posted")
+						  document.getElementById("form-post-product").submit();
+					  }
+				});
+    		  
+    	  }
+    	  else{
+    		  swal("Vui lòng nhập đầy đủ thông tin",{
+    			  button: false
+    			});  
+    	  }
       }
     </script>
 </body>

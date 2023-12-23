@@ -75,7 +75,6 @@ public class AdminController{
     		@RequestParam(value = "category", required = false) int category, 
     		@RequestParam(value = "description", required = false) String description,
     		@RequestParam(value = "listImage", required = false) MultipartFile[] listImage)  {
-    	
     	if (listImage != null) {
 			long millis = System.currentTimeMillis();
 			Date create_at = new java.sql.Date(millis);
@@ -95,12 +94,114 @@ public class AdminController{
 				System.out.println("last added id:" + added);
 				boolean success = productImageProcess.addImages(added, listImage);
 				String str = success ? "Thanh cong" : "Khong thanh cong";
-				System.out.println();
 			}
 			else System.out.println("cannot added product");
     	}
     	
         return "redirect:/admin/dashboard-addproduct";
+    }
+    
+
+    @GetMapping("/dashboard-myproduct")
+    public String dashboardMyproduct(HttpSession session, Model model){
+    	session.setAttribute("type", "list");
+    	if(session.getAttribute("page") == null)
+    		session.setAttribute("page", 0);
+    	model.addAttribute("page", 0);
+    	int maxCount = productProcess.countProduct();
+    	session.setAttribute("maxPage", (maxCount / 10) + 1);
+    	
+    	Map<Integer, String> categories = categoryProcess.getListCategory();
+    	model.addAttribute("categories", categories);
+    	
+    	List<Product> products = productProcess
+    			.getListProductsByCategory(0, "", (byte)0, (byte)10);
+    	model.addAttribute("products", products);
+        
+        HashMap<Integer, String> images = new HashMap<>();
+    	for(Product p : products) {
+    		String str = productImageProcess.getImageByProductId(p.getId());
+    		images.put(p.getId(),str);
+    	}
+    	model.addAttribute("images", images);
+        
+    	return "admin/dashboard_myproduct";
+    }
+    @GetMapping("/dashboard-myproduct/{page}")
+    public String dashboardMyproductPag(HttpSession session,@PathVariable("page") int page, Model model){
+    	page -= 1;
+    	session.setAttribute("type", "list");    	
+    	model.addAttribute("page", page);
+    	
+    	Map<Integer, String> categories = categoryProcess.getListCategory();
+    	model.addAttribute("categories", categories);
+    	
+    	List<Product> products = productProcess
+    			.getListProductsByCategory(0, "", (byte)(0 + page * 10), (byte)10);
+    	model.addAttribute("products", products);
+        
+        HashMap<Integer, String> images = new HashMap<>();
+    	for(Product p : products) {
+    		String str = productImageProcess.getImageByProductId(p.getId());
+    		images.put(p.getId(),str);
+    	}
+    	model.addAttribute("images", images);
+        
+    	return "admin/dashboard_myproduct";
+    }
+    
+    @PostMapping("/dashboard-myproduct/search")
+    public String dashboardMyproductSearch(HttpSession session, @ModelAttribute(value = "search-input") String search_input,
+			@ModelAttribute("category-selected") int category_selected, Model model){
+    	session.setAttribute("search-input", search_input);
+    	session.setAttribute("category-selected", category_selected);
+    	
+    	Map<Integer, String> categories = categoryProcess.getListCategory();
+    	model.addAttribute("categories", categories);
+    	
+    	List<Product> products = productProcess
+    			.getListProductsByCategory(category_selected, search_input, (byte)0, (byte)10);
+    	model.addAttribute("products", products);
+        
+    	HashMap<Integer, String> images = new HashMap<>();
+    	for(Product p : products) {
+    		String str = productImageProcess.getImageByProductId(p.getId());
+    		images.put(p.getId(),str);
+    	}
+    	model.addAttribute("images", images);
+    	session.setAttribute("type", "search");
+    	model.addAttribute("page", 0);
+    	return "admin/dashboard_myproduct";
+    }
+    @GetMapping("/dashboard-myproduct/search/{page}")
+    public String dashboardMyproductPagSearch(HttpSession session,@PathVariable("page") int page, Model model){
+    	page -= 1;
+    	int category_selected = (int) session.getAttribute("category-selected");
+    	String search_input = (String) session.getAttribute("search-input");
+    	
+    	session.setAttribute("type", "search");    	
+    	model.addAttribute("page", page);
+    	
+    	Map<Integer, String> categories = categoryProcess.getListCategory();
+    	model.addAttribute("categories", categories);
+    	
+    	List<Product> products = productProcess
+    			.getListProductsByCategory(category_selected, search_input, (byte)(0 + page * 10), (byte)10);
+    	model.addAttribute("products", products);
+        
+        HashMap<Integer, String> images = new HashMap<>();
+    	for(Product p : products) {
+    		String str = productImageProcess.getImageByProductId(p.getId());
+    		images.put(p.getId(),str);
+    	}
+    	model.addAttribute("images", images);
+        
+    	return "admin/dashboard_myproduct";
+    }
+    @GetMapping("admin/dashboard-myproducts/analysis/{id}")
+    public String analysis(@PathVariable("id") int id) {
+    	
+    	return "dashboard_analysis";
     }
     
     @GetMapping("/test")

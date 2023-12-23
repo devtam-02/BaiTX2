@@ -52,13 +52,13 @@ public class HomeController{
     @GetMapping(value = {"/" ,"/home"})
     public String check(HttpSession session)  {
 //    	this.productProcess = new ProductProcessImpl();
-        List<Product> products = productProcess.getListProducts("", (byte)10);
+        List<Product> products = productProcess.getListProducts("", (byte) 0, (byte)10);
         session.setAttribute("products", products);
         return "index";
     }
     @GetMapping("/shop")
     public String shopView(HttpSession session)  {
-        List<Product> products = productProcess.getListProducts("", (byte)12);
+        List<Product> products = productProcess.getListProducts("",(byte) 0, (byte)12);
         session.setAttribute("products", products);
         
         Map<?, ?> productImages = productImageProcess.getListImages();

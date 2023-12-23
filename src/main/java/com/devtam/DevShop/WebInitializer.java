@@ -13,6 +13,8 @@ public class WebInitializer implements WebApplicationInitializer {
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
+//    	servletContext.add
+    	System.out.println(servletContext.getContextPath());
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.register(WebConfiguration.class);
         context.setServletContext(servletContext);

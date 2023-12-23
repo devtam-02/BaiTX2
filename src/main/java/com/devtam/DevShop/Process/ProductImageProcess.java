@@ -10,5 +10,6 @@ import com.devtam.DevShop.Entity.ProductImage;
 public interface ProductImageProcess {
 	public Map<Integer, List<ProductImage>> getListImages();
 	public List<ProductImage> getListImagesById(int id);
+	public String getImageByProductId(int id);
 	public boolean addImages(int productId, MultipartFile[] files);
 }

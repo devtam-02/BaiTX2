@@ -168,4 +168,38 @@ public class ProductImageProcessImpl implements ProductImageProcess {
 		}
 		return false;
 	}
+
+	@Override
+	public String getImageByProductId(int id) {
+		String url_image = "";
+		String sql = "SELECT * FROM product_image where product_id=?";
+		//Biên dịch		
+		try {
+			PreparedStatement pre = this.con.prepareStatement(sql);
+			//Truyền giá trị cho tham số
+			pre.setInt(1, id);
+			ResultSet rs = pre.executeQuery(); //Lấy về tập kết quả
+			if(rs != null) {
+				while(rs.next()) {
+					if(rs.getString("url_image").length() > 0) {
+						url_image = rs.getString("url_image");
+						return url_image;
+					}
+				}
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			//trở về trạng thái an toàn của kết nối
+			try {
+				this.con.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		return url_image;
+	}
 }

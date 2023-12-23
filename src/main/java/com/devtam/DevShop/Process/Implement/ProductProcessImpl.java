@@ -41,19 +41,20 @@ public class ProductProcessImpl implements ProductProcess{
 		}
 	
 	@Override
-	public ArrayList<Product> getListProducts(String similar, byte total) {
+	public ArrayList<Product> getListProducts(String similar, byte start, byte total) {
 		ArrayList<Product> items = new ArrayList<>();
 		Product item;
 		String sql = "SELECT * FROM product ";
 		sql += "WHERE product.is_active = 1 and product.is_selling = 1 ";
 		sql += "ORDER BY created_at DESC ";
-		sql += "LIMIT ?";
+		sql += "LIMIT ?,?";
 		
 		//Biên dịch		
 		try {
 			PreparedStatement pre = this.con.prepareStatement(sql);
 			//Truyền giá trị cho tham số
-			pre.setByte(1, total);
+			pre.setByte(1, start);
+			pre.setByte(2, total);
 			ResultSet rs = pre.executeQuery(); //Lấy về tập kết quả
 			if(rs != null) {
 				while(rs.next()) {
@@ -86,7 +87,63 @@ public class ProductProcessImpl implements ProductProcess{
 		}
 		return items;
 	}
-
+	@Override
+	public ArrayList<Product> getListProductsByCategory(int category, String similar, byte start, byte total) {
+		ArrayList<Product> items = new ArrayList<>();
+		Product item;
+		String sql = "SELECT * FROM product ";
+		sql += "WHERE product.is_active = 1 and product_name like ? ";
+		if(category!=0)
+			sql += "and category_id=? ";
+		sql += "ORDER BY created_at DESC ";
+		sql += "LIMIT ?,?";
+		
+		//Biên dịch		
+		try {
+			PreparedStatement pre = this.con.prepareStatement(sql);
+			//Truyền giá trị cho tham số
+			if(category!=0) {
+				pre.setString(1,"%" + similar + "%");
+				pre.setInt(2, category);
+				pre.setByte(3, start);
+				pre.setByte(4, total);
+			}else {
+				pre.setString(1,"%" + similar + "%");
+				pre.setByte(2, start);
+				pre.setByte(3, total);
+			}
+			
+			ResultSet rs = pre.executeQuery(); //Lấy về tập kết quả
+			if(rs != null) {
+				while(rs.next()) {
+					item = new Product();
+					item.setId(rs.getInt("id"));
+					item.setCreate_at(rs.getString("created_at"));
+					item.setDescription(rs.getString("description"));
+					item.setIs_active(rs.getInt("is_active"));
+					item.setIs_selling(rs.getInt("is_selling"));
+					item.setPrice(rs.getInt("price"));
+					item.setProduct_name(rs.getString("product_name"));
+					item.setQuantity(rs.getInt("quantity"));
+					item.setSold(rs.getInt("sold"));
+					item.setCategory_id(rs.getInt("category_id"));
+					items.add(item);
+				}
+			}			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			//trở về trạng thái an toàn của kết nối
+			try {
+				this.con.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		return items;
+	}
 	@Override
 	public int addProduct(Product item) {
 		boolean success = false;
@@ -184,6 +241,28 @@ public class ProductProcessImpl implements ProductProcess{
 		
 		
 		return item;
+	}
+
+	@Override
+	public int countProduct() {
+		int count = 0;
+		
+		String sql = "SELECT count(id) as 'maxCount' FROM product ";
+		sql += "WHERE product.is_active = 1";
+		try {
+			PreparedStatement pre = this.con.prepareStatement(sql);
+			ResultSet rs = pre.executeQuery();
+			if(rs != null) {
+				while(rs.next()) {
+					count = rs.getInt("maxCount");
+				}
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return count;
 	}
 
 }
