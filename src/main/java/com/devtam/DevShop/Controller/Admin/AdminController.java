@@ -210,8 +210,7 @@ public class AdminController{
     	List<ProductImage> images = productImageProcess.getListImagesById(id);
     	ArrayList<Integer> viewed = interactProcesss.getViewedById(id);
     	ArrayList<Integer> bought = orderProccess.countSoldLastWeek(id);
-    	System.out.println(viewed);
-    	System.out.println(bought);
+    	
     	model.addAttribute("product", product);
     	model.addAttribute("images", images);
     	model.addAttribute("viewed", viewed);

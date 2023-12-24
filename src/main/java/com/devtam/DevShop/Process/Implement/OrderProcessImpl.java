@@ -85,9 +85,6 @@ public class OrderProcessImpl implements OrderProccess {
 				}
 				
 		}
-		for(int i = 0; i < 7; i++) {
-			System.out.println(sum.get(i));
-		}
 		return sum;
 	}
 

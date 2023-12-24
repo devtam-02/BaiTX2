@@ -84,9 +84,6 @@ public class InteractProcesssImpl implements InteractProcesss {
 				}
 				
 		}
-		for(int i = 0; i < 7; i++) {
-			System.out.println(sum.get(i));
-		}
 		return sum;
 	}
 
@@ -127,9 +124,6 @@ public class InteractProcesssImpl implements InteractProcesss {
 					}
 				}
 				
-		}
-		for(int i = 0; i < 7; i++) {
-			System.out.println(sum.get(i));
 		}
 		return sum;
 	}
