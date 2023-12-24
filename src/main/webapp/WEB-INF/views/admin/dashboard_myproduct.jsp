@@ -216,7 +216,7 @@
 											<div class="list-box-listing-content">
 												<div class="inner">
 													<h3>
-														<a href="<c:url value='/'/>admin/dashboard-myproducts/edit/<%=product.getId()%>"><%=product.getProduct_name()%></a>
+														<a href="<c:url value='/'/>admin/dashboard-myproduct/edit/<%=product.getId()%>"><%=product.getProduct_name()%></a>
 													</h3>
 													<h3><%=product.getPrice() %> VNĐ</h3>
 													<span >Category: <%=categories.get(product.getCategory_id()) %></span><br>
@@ -225,11 +225,11 @@
 											</div>
 										</div>
 										<div class="buttons-to-right">
-											<a href="<c:url value="/"/>admin/dashboard-myproducts/analysis/<%=product.getId()%>" class="button gray">
+											<a href="<c:url value="/"/>admin/dashboard-myproduct/analysis/<%=product.getId()%>" class="button gray">
 											<i class="sl sl-icon-pie-chart"></i> Analysis</a>
-											<a href="<c:url value="/"/>admin/dashboard-myproducts/edit/<%=product.getId()%>" class="button gray"><i
+											<a href="<c:url value="/"/>admin/dashboard-myproduct/edit/<%=product.getId()%>" class="button gray"><i
 												class="sl sl-icon-note"></i> Edit</a> 
-											<a href="<c:url value="/"/>admin/dashboard-myproducts/delete/<%=product.getId()%>" class="button gray"><i class="sl sl-icon-close"></i>
+											<a href="<c:url value="/"/>admin/dashboard-myproduct/delete/<%=product.getId()%>" class="button gray"><i class="sl sl-icon-close"></i>
 												Delete</a>
 										</div>
 									</li>
