@@ -6,6 +6,8 @@ import com.devtam.DevShop.Entity.Category;
 import com.devtam.DevShop.Entity.Product;
 import com.devtam.DevShop.Entity.ProductImage;
 import com.devtam.DevShop.Process.CategoryProcess;
+import com.devtam.DevShop.Process.InteractProcesss;
+import com.devtam.DevShop.Process.OrderProccess;
 import com.devtam.DevShop.Process.ProductImageProcess;
 import com.devtam.DevShop.Process.ProductProcess;
 import com.devtam.DevShop.Process.Implement.CloudinaryProcess;
@@ -33,7 +35,6 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -59,6 +60,11 @@ public class AdminController{
 	@Autowired
 	private CategoryProcess categoryProcess;
 
+	@Autowired
+	private InteractProcesss interactProcesss;
+	
+	@Autowired
+	private OrderProccess orderProccess;
 	
     @GetMapping(value = {"/dashboard-addproduct"})
     public String addProduct(HttpSession session)  {
@@ -198,15 +204,30 @@ public class AdminController{
         
     	return "admin/dashboard_myproduct";
     }
-    @GetMapping("admin/dashboard-myproducts/analysis/{id}")
-    public String analysis(@PathVariable("id") int id) {
-    	
-    	return "dashboard_analysis";
+    @GetMapping("dashboard-myproduct/analysis/{id}")
+    public String analysis(@PathVariable("id") int id, Model model) {
+    	Product product = productProcess.getProduct(id);
+    	List<ProductImage> images = productImageProcess.getListImagesById(id);
+    	ArrayList<Integer> viewed = interactProcesss.getViewedById(id);
+    	ArrayList<Integer> bought = orderProccess.countSoldLastWeek(id);
+    	System.out.println(viewed);
+    	System.out.println(bought);
+    	model.addAttribute("product", product);
+    	model.addAttribute("images", images);
+    	model.addAttribute("viewed", viewed);
+    	model.addAttribute("bought", bought);
+    	return "admin/dashboard_analysis";
     }
     
     @GetMapping("/test")
     @ResponseBody
     public String test(){
+    	ArrayList<Integer> viewed = interactProcesss.getViewedById(78);
+    	ArrayList<Integer> bought = orderProccess.countSoldLastWeek(78);
+    	if(viewed != null)
+    		System.out.println(viewed);
+    	if(bought != null)
+    		System.out.println(bought);
     	String str = true ? "Thanh cong" : "Khong thanh cong";
 		System.out.println(str);
 		return str;

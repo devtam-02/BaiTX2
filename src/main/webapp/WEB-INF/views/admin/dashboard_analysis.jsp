@@ -1,3 +1,5 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.devtam.DevShop.Entity.Product"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.HashMap"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -138,9 +140,25 @@
 
 			<!-- Content
 	================================================== -->
+<%
+	Product product = (Product) request.getAttribute("product");	
 
+%>
 			<div class="dashboard-content">
+				<div class="row">
+					<div class="col-md-4" id="today" >
+
+    				</div>
+				    <div class="col-md-8 m-3" id="viewed-and-bought" >
 				
+				    </div>
+				</div>
+				<div class="row">
+					<div class="row">
+						
+					</div>
+				</div>
+			</div>
 			</div>
 			<!-- Content / End -->
 		</div>
@@ -177,6 +195,84 @@
 	<!-- DropZone | Documentation: http://dropzonejs.com -->
 	<script type="text/javascript"
 		src="<c:url value="/"/>assets/scripts/dropzone.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	
+	<%
+		ArrayList<Integer> viewed = (ArrayList) request.getAttribute("viewed");
+		ArrayList<Integer> bought = (ArrayList) request.getAttribute("bought");
+	%>
+	<script>
+    var options = {
+          series: [
+      	  	{	<%int k = 20;%>
+            	name: "Lượt truy cập",            	
+            	data: [<%=viewed.get(0)%>, <%=viewed.get(1)%>, <%=viewed.get(2)%>, 
+            	<%=viewed.get(3)%>, <%=viewed.get(4)%>, <%=viewed.get(5)%>, <%=viewed.get(6)%>]
+       	  	},
+      	  	{
+              	name: "Lượt mua",
+              	data: [<%=bought.get(0)%>, <%=bought.get(1)%>, <%=bought.get(2)%>, 
+                	<%=bought.get(3)%>, <%=bought.get(4)%>, <%=bought.get(5)%>, <%=bought.get(6)%>]
+      	  	}
+			          
+          ],
+          chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'straight'
+        },
+        title: {
+          text: 'Tình hình tiêu thụ sản phẩm trong tuần qua',
+          align: 'left'
+        },
+        grid: {
+          row: {
+            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+            opacity: 0.5
+          },
+        },
+        xaxis: {
+          categories: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+        }
+        };
 
+        var chart1 = new ApexCharts(document.querySelector("#viewed-and-bought"), options);
+        chart1.render();
+		
+        var options = {
+                series: [<%=product.getSold()%>, <%=product.getQuantity() - product.getSold()%>, 0],
+                chart: {
+                width: 380,
+                type: 'pie',
+              },
+              title: {
+                  text: 'Hiện trạng sản phẩm',
+                  align: 'center'
+                },
+              labels: ['Sản phẩm đã bán', 'Sản phẩm còn lại','Hàng lỗi'],
+              responsive: [{
+                breakpoint: 480,
+                options: {
+                  chart: {
+                    width: 200
+                  },
+                  legend: {
+                    position: 'bottom'
+                  }
+                }
+              }]
+              };
+
+              var chart = new ApexCharts(document.querySelector("#today"), options);
+              chart.render();
+</script>
 </body>
 </html>
