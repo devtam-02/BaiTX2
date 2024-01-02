@@ -88,6 +88,52 @@ public class ProductProcessImpl implements ProductProcess{
 		return items;
 	}
 	@Override
+	public ArrayList<Product> getListProductsBestSeller(String similar, byte start, byte total) {
+		ArrayList<Product> items = new ArrayList<>();
+		Product item;
+		String sql = "SELECT * FROM (SELECT * FROM product as p WHERE is_active = 1 and ";
+		sql += "is_selling = 1 ORDER BY created_at DESC LIMIT ?, ?) as p ";
+		sql += "ORDER BY sold DESC";		
+		//Biên dịch		
+		try {
+			PreparedStatement pre = this.con.prepareStatement(sql);
+			//Truyền giá trị cho tham số
+			pre.setByte(1, start);
+			pre.setByte(2, total);
+			ResultSet rs = pre.executeQuery(); //Lấy về tập kết quả
+			if(rs != null) {
+				while(rs.next()) {
+					item = new Product();
+					item.setId(rs.getInt("id"));
+					item.setCreate_at(rs.getString("created_at"));
+					item.setDescription(rs.getString("description"));
+					item.setIs_active(rs.getInt("is_active"));
+					item.setIs_selling(rs.getInt("is_selling"));
+					item.setPrice(rs.getInt("price"));
+					item.setProduct_name(rs.getString("product_name"));
+					item.setQuantity(rs.getInt("quantity"));
+					item.setSold(rs.getInt("sold"));
+					item.setCategory_id(rs.getInt("category_id"));
+					items.add(item);
+				}
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			//trở về trạng thái an toàn của kết nối
+			try {
+				this.con.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		return items;
+	}
+	
+	@Override
 	public ArrayList<Product> getListProductsByCategory(int category, String similar, byte start, byte total) {
 		ArrayList<Product> items = new ArrayList<>();
 		Product item;
@@ -244,14 +290,15 @@ public class ProductProcessImpl implements ProductProcess{
 	}
 
 	@Override
-	public int countProduct() {
-		int count = 0;
-		
+	public int countProduct(int catId) {
+		int count = 0;		
 		String sql = "SELECT count(id) as 'maxCount' FROM product ";
-		sql += "WHERE product.is_active = 1";
+		sql += "WHERE product.is_active = 1 ";
+		if (catId != 0) sql += "and WHERE product.category_id = ?";
 		try {
 			PreparedStatement pre = this.con.prepareStatement(sql);
-			ResultSet rs = pre.executeQuery();
+			if (catId != 0) pre.setInt(catId, 1);
+			ResultSet rs = pre.executeQuery();			
 			if(rs != null) {
 				while(rs.next()) {
 					count = rs.getInt("maxCount");

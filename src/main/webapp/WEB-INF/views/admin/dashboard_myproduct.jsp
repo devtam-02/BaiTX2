@@ -28,6 +28,11 @@
 </head>
 
 <body>
+	<%if(session.getAttribute("isDelete") != null) if ((int)session.getAttribute("isDelete") == 1){%>
+		<script type="text/javascript">
+		swal("Lỗi", "Vui lòng đăng nhập trước khi thực hiện thao tác!", "success");
+		</script>
+	<%} %><%session.setAttribute("isDelete", 0); %>
 	<!-- Wrapper -->
 	<div id="wrapper">
 		<!-- Header Container
@@ -67,7 +72,7 @@
 							<div class="user-menu">
 								<div class="user-name">
 									<span>
-									<!-- <img src="<c:url value="/"/>assets/${session.admin.avatar}" alt="" /> -->
+									<img src="https://haycafe.vn/wp-content/uploads/2022/02/Avatar-trang-den.png" alt="">
 									</span>My Account
 								</div>
 								<ul>
@@ -229,7 +234,7 @@
 											<i class="sl sl-icon-pie-chart"></i> Analysis</a>
 											<a href="<c:url value="/"/>admin/dashboard-myproduct/edit/<%=product.getId()%>" class="button gray"><i
 												class="sl sl-icon-note"></i> Edit</a> 
-											<a href="<c:url value="/"/>admin/dashboard-myproduct/delete/<%=product.getId()%>" class="button gray"><i class="sl sl-icon-close"></i>
+											<a href="<c:url value="/"/>admin/delete/product/<%=product.getId()%>" class="button gray"><i class="sl sl-icon-close"></i>
 												Delete</a>
 										</div>
 									</li>

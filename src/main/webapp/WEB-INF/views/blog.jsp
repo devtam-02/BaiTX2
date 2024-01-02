@@ -20,7 +20,9 @@
 <title>Male-Fashion</title>
 <link rel="icon" href="<c:url value="/"/>assets/img/logo-3.png">
 <!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
+	rel="stylesheet">
 <!-- Css Styles -->
 <link rel="stylesheet" href="<c:url value="/"/>assets/css/bootstrap.min.css" type="text/css">
 <link rel="stylesheet" href="<c:url value="/"/>assets/css/font-awesome.min.css" type="text/css">
@@ -30,8 +32,8 @@
 <link rel="stylesheet" href="<c:url value="/"/>assets/css/owl.carousel.min.css" type="text/css">
 <link rel="stylesheet" href="<c:url value="/"/>assets/css/slicknav.min.css" type="text/css">
 <link rel="stylesheet" href="<c:url value="/"/>assets/css/style.css" type="text/css">
+
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -110,7 +112,7 @@
 				<div class="col-lg-6 col-md-6">
 					<nav class="header__menu mobile-menu">
 						<ul>
-							<li class="active"><a href="home">Home</a></li>
+							<li><a href="home">Home</a></li>
 							<li><a href="shop">Shop</a></li>
 							<li><a href="#">Pages</a>
 								<ul class="dropdown">
@@ -119,7 +121,7 @@
 									<li><a href="myhistory">My History</a></li>
 									<li><a href="about">About Us</a></li>
 								</ul></li>
-							<li><a href="blog">Blog</a></li>
+							<li class="active"><a href="blog">Blog</a></li>
 							<li><a href="contact">Contacts</a></li>
 						</ul>
 					</nav>
@@ -141,224 +143,22 @@
 	</header>
 	<!-- Header Section End -->
 
-<section class="product spad">
+<!-- Breadcrumb Section Begin -->
+	<section class="breadcrumb-blog set-bg"
+		data-setbg="<c:url value="/"/>assets/img/breadcrumb-bg.jpg">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12">
-					<ul class="filter__controls">
-						<!-- <li  data-filter="*">Special</li> -->
-						<li class="active" data-filter=".new-arrivals">New Arrivals</li>
-						<li data-filter=".hot-sales">Best Sellers</li>
-					</ul>
-				</div>
-			</div>
-			<div class="row product__filter">
-				<%
-				List<Product> productList = (List) request.getAttribute("products"); 
-				List<Product> bestSellerProductList = (List) request.getAttribute("best-sellers");
-				%>
-				<%
-				Map<Integer, List<ProductImage>> productImages = (Map) request.getAttribute("productImages");		
-				%>
-				<% 
-				if(bestSellerProductList != null)	{
-				for(Product product : bestSellerProductList) {
-				%>
-				<% 
-				List<ProductImage> images = productImages.get(Integer.valueOf(product.getId()));
-				String image = "";
-				if (images.size()>0) image = images.get(0).getUrl_image();
-				%>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix hot-sales"
-						style="display: none;">
-						<div class="product__item sale">
-							
-							<div>
-								<div class="product__item__pic set-bg"
-								data-setbg="<%=image%>">
-								<span class="label">Hot</span>
-								<ul class="product__hover">
-									<li><a href="#"><img src="<c:url value="/"/>assets/img/icon/heart.png" alt=""></a></li>
-									<li><a href="#"><img src="<c:url value="/"/>assets/img/icon/compare.png" alt="">
-											<span>Compare</span></a></li>
-									<li><a href="<c:url value="/"/>details/<%=product.getId()%>"><img
-											src="<c:url value="/"/>assets/img/icon/search.png" alt=""><span>Product Details</span></a></li>
-								</ul>
-								</div>
-							</div>
-							
-							
-							<div class="product__item__text">
-								<h6><%=product.getProduct_name()%></h6>
-								<a href="#" class="add-cart">+
-									Add To Cart</a>
-								<div class="rating">
-									<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-										class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-										class="fa fa-star-o"></i>
-								</div>
-								<h5><%=product.getPrice() %> VNĐ</h5>
-								<div class="product__color__select">
-									<label for="pc-7"> <input type="radio" id="pc-7">
-									</label> <label class="active black" for="pc-8"> <input
-										type="radio" id="pc-8">
-									</label> <label class="grey" for="pc-9"> <input type="radio"
-										id="pc-9">
-									</label>
-								</div>
-							</div>
-						</div>
-				</div>
-				<%}} %>	
-				<% 
-				if(productList != null)	{
-				for(Product product : productList) {
-				%>
-				<% 
-				List<ProductImage> images = productImages.get(Integer.valueOf(product.getId()));
-				String image = "";
-				if (images.size()>0) image = images.get(0).getUrl_image();
-				%>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals" >
-						<div class="product__item">							
-							<div>
-								<div class="product__item__pic set-bg"
-								data-setbg="<%=image%>">
-								<span class="label">Hot</span>
-								<ul class="product__hover">
-									<li><a href="#"><img src="<c:url value="/"/>assets/img/icon/heart.png" alt=""></a></li>
-									<li><a href="#"><img src="<c:url value="/"/>assets/img/icon/compare.png" alt="">
-											<span>Compare</span></a></li>
-									<li><a href="<c:url value="/"/>details/<%=product.getId()%>"><img
-											src="<c:url value="/"/>assets/img/icon/search.png" alt=""><span>Product Details</span></a></li>
-								</ul>
-								</div>
-							</div>
-							
-							
-							<div class="product__item__text">
-								<h6><%=product.getProduct_name()%></h6>
-								<a href="#" class="add-cart">+
-									Add To Cart</a>
-								<div class="rating">
-									<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-										class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-										class="fa fa-star-o"></i>
-								</div>
-								<h5><%=product.getPrice() %> VNĐ</h5>
-								<div class="product__color__select">
-									<label for="pc-7"> <input type="radio" id="pc-7">
-									</label> <label class="active black" for="pc-8"> <input
-										type="radio" id="pc-8">
-									</label> <label class="grey" for="pc-9"> <input type="radio"
-										id="pc-9">
-									</label>
-								</div>
-							</div>
-						</div>
-				</div>
-				<%}} %>
-			</div>
-		</div>
-	</section>
-	<!-- Product Section End -->
-
-	<!-- Categories Section Begin -->
-	<section class="categories spad">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-3">
-					<div class="categories__text">
-						<h2>
-							Clothings Hot <br /> <span>Shoe Collection</span> <br />
-							Accessories
-						</h2>
-					</div>
-				</div>
-				<div class="col-lg-4">
-					<div class="categories__hot__deal">
-						<img src="<c:url value="/"/>assets/img/product-sale.png" alt="">
-						<div class="hot__deal__sticker">
-							<span>Sale Of</span>
-							<h5>$29.99</h5>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-4 offset-lg-1">
-					<div class="categories__deal__countdown">
-						<span>Deal Of The Week</span>
-						<h2>Multi-pocket Chest Bag Black</h2>
-						<div class="categories__deal__countdown__timer" id="countdown">
-							<div class="cd-item">
-								<span>3</span>
-								<p>Days</p>
-							</div>
-							<div class="cd-item">
-								<span>1</span>
-								<p>Hours</p>
-							</div>
-							<div class="cd-item">
-								<span>50</span>
-								<p>Minutes</p>
-							</div>
-							<div class="cd-item">
-								<span>18</span>
-								<p>Seconds</p>
-							</div>
-						</div>
-						<a href="#" class="primary-btn">Shop now</a>
-					</div>
+					<h2>Our Blog</h2>
 				</div>
 			</div>
 		</div>
 	</section>
-	<!-- Categories Section End -->
+	<!-- Breadcrumb Section End -->
 
-	<!-- Instagram Section Begin -->
-	<section class="instagram spad">
+	<!-- Blog Section Begin -->
+	<section class="blog spad">
 		<div class="container">
-			<div class="row">
-				<div class="col-lg-8">
-					<div class="instagram__pic">
-						<div class="instagram__pic__item set-bg"
-							data-setbg="<c:url value="/"/>assets/img/instagram/instagram-1.jpg"></div>
-						<div class="instagram__pic__item set-bg"
-							data-setbg="<c:url value="/"/>assets/img/instagram/instagram-2.jpg"></div>
-						<div class="instagram__pic__item set-bg"
-							data-setbg="<c:url value="/"/>assets/img/instagram/instagram-3.jpg"></div>
-						<div class="instagram__pic__item set-bg"
-							data-setbg="<c:url value="/"/>assets/img/instagram/instagram-4.jpg"></div>
-						<div class="instagram__pic__item set-bg"
-							data-setbg="<c:url value="/"/>assets/img/instagram/instagram-5.jpg"></div>
-						<div class="instagram__pic__item set-bg"
-							data-setbg="<c:url value="/"/>assets/img/instagram/instagram-6.jpg"></div>
-					</div>
-				</div>
-				<div class="col-lg-4">
-					<div class="instagram__text">
-						<h2>Instagram</h2>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-							sed do eiusmod tempor incididunt ut labore et dolore magna
-							aliqua.</p>
-						<h3>#Male_Fashion</h3>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Instagram Section End -->
-
-	<!-- Latest Blog Section Begin -->
-	<section class="latest spad">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="section-title">
-						<span>Latest News</span>
-						<h2>Fashion New Trends</h2>
-					</div>
-				</div>
-			</div>
 			<div class="row">
 				<div class="col-lg-4 col-md-6 col-sm-6">
 					<div class="blog__item">
@@ -396,10 +196,83 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-lg-4 col-md-6 col-sm-6">
+					<div class="blog__item">
+						<div class="blog__item__pic set-bg"
+							data-setbg="<c:url value="/"/>assets/img/blog/blog-4.jpg"></div>
+						<div class="blog__item__text">
+							<span><img src="<c:url value="/"/>assets/img/icon/calendar.png" alt=""> 16
+								February 2020</span>
+							<h5>Aiming For Higher The Mastopexy</h5>
+							<a href="#">Read More</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6 col-sm-6">
+					<div class="blog__item">
+						<div class="blog__item__pic set-bg"
+							data-setbg="<c:url value="/"/>assets/img/blog/blog-5.jpg"></div>
+						<div class="blog__item__text">
+							<span><img src="<c:url value="/"/>assets/img/icon/calendar.png" alt=""> 21
+								February 2020</span>
+							<h5>Wedding Rings A Gift For A Lifetime</h5>
+							<a href="#">Read More</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6 col-sm-6">
+					<div class="blog__item">
+						<div class="blog__item__pic set-bg"
+							data-setbg="<c:url value="/"/>assets/img/blog/blog-6.jpg"></div>
+						<div class="blog__item__text">
+							<span><img src="<c:url value="/"/>assets/img/icon/calendar.png" alt=""> 28
+								February 2020</span>
+							<h5>The Different Methods Of Hair Removal</h5>
+							<a href="#">Read More</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6 col-sm-6">
+					<div class="blog__item">
+						<div class="blog__item__pic set-bg"
+							data-setbg="<c:url value="/"/>assets/img/blog/blog-7.jpg"></div>
+						<div class="blog__item__text">
+							<span><img src="<c:url value="/"/>assets/img/icon/calendar.png" alt=""> 16
+								February 2020</span>
+							<h5>Hoop Earrings A Style From History</h5>
+							<a href="#">Read More</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6 col-sm-6">
+					<div class="blog__item">
+						<div class="blog__item__pic set-bg"
+							data-setbg="<c:url value="/"/>assets/img/blog/blog-8.jpg"></div>
+						<div class="blog__item__text">
+							<span><img src="<c:url value="/"/>assets/img/icon/calendar.png" alt=""> 21
+								February 2020</span>
+							<h5>Lasik Eye Surgery Are You Ready</h5>
+							<a href="#">Read More</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6 col-sm-6">
+					<div class="blog__item">
+						<div class="blog__item__pic set-bg"
+							data-setbg="<c:url value="/"/>assets/img/blog/blog-9.jpg"></div>
+						<div class="blog__item__text">
+							<span><img src="<c:url value="/"/>assets/img/icon/calendar.png" alt=""> 28
+								February 2020</span>
+							<h5>Lasik Eye Surgery Are You Ready</h5>
+							<a href="#">Read More</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>
-	<!-- Latest Blog Section End -->
+	<!-- Blog Section End -->
+	
 
 	<!-- Footer Section Begin -->
 	<footer class="footer">

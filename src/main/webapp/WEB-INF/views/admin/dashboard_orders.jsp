@@ -1,3 +1,7 @@
+<%@page import="com.devtam.DevShop.Entity.User"%>
+<%@page import="com.devtam.DevShop.Entity.Product"%>
+<%@page import="com.devtam.DevShop.Entity.Order"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.HashMap"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -108,16 +112,16 @@
 					<ul data-submenu-title="Main">
 						<li><a href="<c:url value="/"/>admin/dashboard"><i
 								class="sl sl-icon-settings"></i> Dashboard</a></li>
-						<li><a href="<c:url value="/"/>admin/dashboard-orders"><i
+						<li class="active"><a href="<c:url value="/"/>admin/dashboard-orders"><i
 								class="fa fa-calendar-check-o"></i> Orders</a></li>
 						<li><a href="<c:url value="/"/>admin/dashboard-wallet"><i
 								class="sl sl-icon-wallet"></i> Wallet</a></li>
 					</ul>
 
 					<ul data-submenu-title="Products">
-						<li><a href="<c:url value="/"/>admin/dashboard-myproducts"><i
+						<li><a href="<c:url value="/"/>admin/dashboard-myproduct"><i
 								class="sl sl-icon-layers"></i> My products</a></li>
-						<li class="active"><a
+						<li><a
 							href="<c:url value="/"/>admin/dashboard-addproduct"><i
 								class="sl sl-icon-plus"></i> Add Product</a></li>
 					</ul>
@@ -136,13 +140,128 @@
 			</div>
 			<!-- Navigation / End -->
 
+			
 			<!-- Content
 	================================================== -->
-
 			<div class="dashboard-content">
-				
+
+				<!-- Titlebar -->
+				<div id="titlebar">
+					<div class="row">
+						<div class="col-md-12">
+							<h2>Bookings</h2>
+							<!-- Breadcrumbs -->
+							<nav id="breadcrumbs">
+								<ul>
+									<li><a href="#">Home</a></li>
+									<li><a href="#">Dashboard</a></li>
+									<li>Orders</li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<!-- Listings -->
+					<div class="col-lg-12 col-md-12">
+						<div class="dashboard-list-box margin-top-0">
+					<%
+						ArrayList<Order> listOrders = (ArrayList) request.getAttribute("listOrders");
+						HashMap<Integer, ArrayList<Product>> listProducts = (HashMap) request.getAttribute("listProducts");
+						HashMap<String, User> listUsers = (HashMap) request.getAttribute("listUsers");
+					%>
+							<h4>Booking Requests</h4>
+							<ul>
+								<% if(listOrders.size()>0) for(Order item : listOrders) {%>
+									<li class="pending-booking">
+										<div class="list-box-listing bookings">
+											<div class="list-box-listing-img">
+												<img src="https://haycafe.vn/wp-content/uploads/2022/02/Avatar-trang-den.png" alt="">
+											</div>
+											<div class="list-box-listing-content">
+												<div class="inner">
+													<div></div>
+													<% if (listProducts.get(item.getId()).size() == 1){%>
+													<h3><%=listProducts.get(item.getId()).get(0).getProduct_name() %></h3>
+													<%}else{ %>
+													<h3>
+														<%=listProducts.get(item.getId()).get(0).getProduct_name() %> 
+														 (And <%=listProducts.get(item.getId()).size() - 1 %> more ...)
+													</h3>
+													<%}%>
+													<div class="inner-booking-list">
+														<h5>Purchase Date:</h5>
+														<ul class="booking-list">
+															<li class="highlighted" ><%= item.getBooking_Date() %></li>
+														</ul>
+													</div>
+
+													<div class="inner-booking-list">
+														<h5>Note:</h5>
+														<ul class="booking-list">
+															<li class="highlighted"><%= item.getNote() %></li>
+														</ul>
+													</div>
+
+													<div class="inner-booking-list">
+														<h5>Price:</h5>
+														<ul class="booking-list">
+															<li class="highlighted" ><%= item.getTotal() %> VNĐ</li>
+														</ul>
+													</div>
+
+													<div class="inner-booking-list">
+														<h5>Client:</h5>
+														<ul class="booking-list">
+															<li><%=listUsers.get(item.getUserId()).getUser_Name() %></li>
+															<li><%=listUsers.get(item.getUserId()).getEmail() %></li>
+															<li><%=listUsers.get(item.getUserId()).getPhone_Number() %></li>
+														</ul>
+													</div>
+
+													<!-- Reply to review popup -->
+													<div id="small-dialog" class="zoom-anim-dialog mfp-hide">
+														<div class="small-dialog-header">
+															<h3>Send Message</h3>
+														</div>
+														<div class="message-reply margin-top-0">
+															<form action="/send-message" method="post">
+																<textarea name="message" cols="40" rows="3"
+																	placeholder="Your Message to <%=listUsers.get(item.getUserId()).getEmail() %>"></textarea>
+																<input name="email" value="<%=listUsers.get(item.getUserId()).getEmail() %>">
+																<button type="submit" class="button">Send</button>
+															</form>
+														</div>
+													</div>
+
+													<a href="#small-dialog"
+														class="rate-review popup-with-zoom-anim"><i
+														class="sl sl-icon-envelope-open"></i> Send Message</a>
+												</div>
+											</div>
+										</div>
+										<div class="buttons-to-right">
+											<a href="<c:url value="/"/>delete-order/<%=item.getId() %>" class="button gray reject"><i
+												class="sl sl-icon-close"></i> Delete</a> <a
+												href="<c:url value="/"/>dashboard-invoice/<%=item.getId() %>"
+												class="button gray approve"><i class="im im-icon-Coin"></i>
+												View Invoice</a>
+										</div>
+									</li>
+								<%} %>
+							</ul>
+						</div>
+					</div>
+
+
+				</div>
+
 			</div>
 			<!-- Content / End -->
+		
+		
+		
 		</div>
 		<!-- Dashboard / End -->
 	</div>

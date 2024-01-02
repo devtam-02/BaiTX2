@@ -50,24 +50,67 @@ public class HomeController{
 	
 	
     @GetMapping(value = {"/" ,"/home"})
-    public String check(HttpSession session)  {
-//    	this.productProcess = new ProductProcessImpl();
-        List<Product> products = productProcess.getListProducts("", (byte) 0, (byte)10);
-        session.setAttribute("products", products);
+    public String check(HttpSession session, Model model)  {
+        List<Product> products = productProcess.getListProducts("", (byte) 0, (byte)12);
+        model.addAttribute("products", products);
+
+        List<Product> bestSeller = productProcess.getListProductsBestSeller("", (byte) 0, (byte)12);
+        model.addAttribute("best-sellers", bestSeller);
+        
+        Map<?, ?> productImages = productImageProcess.getListImages();
+        model.addAttribute("productImages", productImages);
+        
         return "index";
     }
     @GetMapping("/shop")
-    public String shopView(HttpSession session)  {
-        List<Product> products = productProcess.getListProducts("",(byte) 0, (byte)12);
-        session.setAttribute("products", products);
+    public String shopView(HttpSession session, Model model)  {
+    	int page = 0;
+    	int productsPerPage = 12;
+    	if(session.getAttribute("Spage") == null || (int)session.getAttribute("Spage") < 0)
+    		session.setAttribute("Spage", page);
+    	else {
+    		page = (int) session.getAttribute("Spage");
+    	}
+    	
+    	int category = 0;
+    	if(session.getAttribute("Scategory") != null) {
+    		category = (int) session.getAttribute("Scategory");
+    	}
+    	
+    	int maxCount = productProcess.countProduct(category);
+    	session.setAttribute("SmaxPage", (maxCount / productsPerPage) + 1);
+
+        List<Product> products = productProcess.getListProductsByCategory(category, "",(byte) 
+        		(0 + page * productsPerPage), (byte)productsPerPage);
+        model.addAttribute("products", products);
         
         Map<?, ?> productImages = productImageProcess.getListImages();
-        session.setAttribute("productImages", productImages);
+        model.addAttribute("productImages", productImages);
         
         Map<Integer, String> categories = categoryProcess.getListCategory();
-        session.setAttribute("categories", categories);
+        model.addAttribute("categories", categories);
         
+        session.setAttribute("current-category", category);
+        session.setAttribute("current-page", page);
+        session.setAttribute("Scategory", 0);
+        session.setAttribute("Spage", 0);
+
         return "shop";
+    }
+    @GetMapping("/shop/{catId}/{pageNum}")
+    public String shopViewPage(HttpSession session, 
+    		@PathVariable("catId") int id, 
+    		@PathVariable("pageNum") int num)  
+    {
+    	session.setAttribute("Scategory", id);
+    	session.setAttribute("Spage", num);
+        return "redirect:/shop";
+    }
+    @GetMapping("/direct-shop")
+    public String shopViewCate(HttpSession session, @PathVariable("catId") int id)  {
+    	session.setAttribute("Scategory", 0);
+    	session.setAttribute("Spage", 0);
+        return "redirect:/shop";
     }
     
     @GetMapping("/details/{id}")
@@ -78,7 +121,14 @@ public class HomeController{
         session.setAttribute("images", images);
         return "details";
     }
-
+    @GetMapping("/blog")
+    public String blogView(HttpSession session, Model model)  {
+    	return "blog";
+    }
+    @GetMapping("/contact")
+    public String contact(HttpSession session, Model model)  {
+    	return "contact";
+    }
     @RequestMapping(value ="/submit", method = RequestMethod.POST)
     public void submit(@RequestParam String name, @RequestParam String phone) {
       System.out.println("Tên: " + name);

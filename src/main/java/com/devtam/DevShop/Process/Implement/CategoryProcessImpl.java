@@ -98,5 +98,37 @@ public class CategoryProcessImpl implements CategoryProcess {
 		
 		return item;
 	}
+	@Override
+	public int countTotalCategory() {
+int sum = 0;
+		
+		String sql = "SELECT count(*) as total FROM `category`";
+		//Biên dịch		
+				try {
+					PreparedStatement pre = this.con.prepareStatement(sql);
+					//Truyền giá trị cho tham số				
+					ResultSet rs = pre.executeQuery(); //Lấy về tập kết quả
+					if(rs != null) {
+						while(rs.next()) {
+							int x = 0;
+							x = rs.getInt("total");
+							sum = x;
+						}
+					}
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+					//trở về trạng thái an toàn của kết nối
+					try {
+						this.con.rollback();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+		return sum;
+	}
 
 }

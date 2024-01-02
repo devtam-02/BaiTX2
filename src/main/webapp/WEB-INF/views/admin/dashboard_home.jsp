@@ -1,3 +1,6 @@
+<%@page import="com.devtam.DevShop.DTO.UserDTO"%>
+<%@page import="com.devtam.DevShop.DTO.OrderDTO"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.HashMap"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -106,7 +109,7 @@
 			<div class="dashboard-nav">
 				<div class="dashboard-nav-inner">
 					<ul data-submenu-title="Main">
-						<li><a href="<c:url value="/"/>admin/dashboard"><i
+						<li class="active"><a href="<c:url value="/"/>admin/dashboard"><i
 								class="sl sl-icon-settings"></i> Dashboard</a></li>
 						<li><a href="<c:url value="/"/>admin/dashboard-orders"><i
 								class="fa fa-calendar-check-o"></i> Orders</a></li>
@@ -115,9 +118,9 @@
 					</ul>
 
 					<ul data-submenu-title="Products">
-						<li><a href="<c:url value="/"/>admin/dashboard-myproducts"><i
+						<li><a href="<c:url value="/"/>admin/dashboard-myproduct"><i
 								class="sl sl-icon-layers"></i> My products</a></li>
-						<li class="active"><a
+						<li><a
 							href="<c:url value="/"/>admin/dashboard-addproduct"><i
 								class="sl sl-icon-plus"></i> Add Product</a></li>
 					</ul>
@@ -136,11 +139,141 @@
 			</div>
 			<!-- Navigation / End -->
 
+			
 			<!-- Content
 	================================================== -->
-
 			<div class="dashboard-content">
+
+				<!-- Titlebar -->
+				<div id="titlebar">
+					<div class="row">
+						<div class="col-md-12">
+							<h2>WELCOME!!!</h2>
+							<!-- Breadcrumbs -->
+							<nav id="breadcrumbs">
+								<ul>
+									<li><a href="#">Home</a></li>
+									<li>Dashboard</li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- Content -->
+				<div class="row" style="justify-content: center; display: flex;">
+
+					<!-- Item -->
+					<div class="col-lg-3 col-md-6">
+						<div class="dashboard-stat color-1">
+							<div class="dashboard-stat-content">
+								<h4><%= (int) request.getAttribute("totalOrder") %></h4>
+								<span>Total Orders</span>
+							</div>
+							<div class="dashboard-stat-icon">
+								<i class="im im-icon-Add-Bag"></i>
+							</div>
+						</div>
+					</div>
+
+					<!-- Item -->
+					<div class="col-lg-3 col-md-6">
+						<div class="dashboard-stat color-2">
+							<div class="dashboard-stat-content">
+								<h4 ><%= (int) request.getAttribute("totalProduct") %></h4>
+								<span>Total Products</span>
+							</div>
+							<div class="dashboard-stat-icon">
+								<i class="im im-icon-Polo-Shirt"></i>
+							</div>
+						</div>
+					</div>
+
+
+					<!-- Item -->
+					<div class="col-lg-3 col-md-6">
+						<div class="dashboard-stat color-3">
+							<div class="dashboard-stat-content">
+								<h4 ><%= (int) request.getAttribute("totalUser") %></h4>
+								<span>Total Users</span>
+							</div>
+							<div class="dashboard-stat-icon">
+								<i class="im im-icon-Add-UserStar"></i>
+							</div>
+						</div>
+					</div>
+
+					<!-- Item -->
+					<div class="col-lg-3 col-md-6">
+						<div class="dashboard-stat color-4">
+							<div class="dashboard-stat-content">
+								<h4><%= (int) request.getAttribute("totalCategory") %></h4>
+								<span>Total Categories</span>
+							</div>
+							<div class="dashboard-stat-icon">
+								<i class="im im-icon-Box-withFolders"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<%
+				ArrayList<UserDTO> userDto = (ArrayList) request.getAttribute("userDto");
+				ArrayList<OrderDTO> orderDTO = (ArrayList) request.getAttribute("orderDTO");				
+				%>
+				<div class="row" style="margin-bottom: 70px;">
+					
+					<!-- Recent Activity -->
+					<div class="col-lg-6 col-md-12">
+						<div class="dashboard-list-box with-icons margin-top-20">
+							<h4>Recent Customers</h4>
+							<ul>
+								<%for(UserDTO u : userDto) {%>
+									<li style="padding-left: 30px;">
+										<img style="width: 45px; border-radius: 50%" 
+										src="<%= u.getAvatar()%>" alt="">
+										<strong><%=u.getName()%></strong> 
+										<a>Email: <%=u.getEmail()%></a>
+									</li>
+								<%} %>
+							</ul>
+						</div>
+					</div>
+
+						<!-- Invoices -->
+					<div class="col-lg-6 col-md-12">
+						<div class="dashboard-list-box invoices with-icons margin-top-20">
+							<h4>Recent Orders</h4>
+							<ul>
+								<%for(OrderDTO o : orderDTO) {%>
+									<li><i class="list-box-icon sl sl-icon-doc"></i> <strong><%=o.getCustomerName() %></strong>
+										<ul>
+											<%if (o.getPaymentMethod().contains("Payment on delivery")) {%>
+											<li class="unpaid">Payment on delivery</li>
+											<%}else {%>
+											<li class="paid">Payment with momo</li>
+											<%} %>
+											<li>Order:#<%=o.getId() %></li>
+											<li>Date: <%=o.getDate()%></li>
+											<li>Price: <%=o.getPrice()%> VNĐ</li>
+										</ul>
+										<div class="buttons-to-right">
+											<a href="<c:url value="/"/>dashboard/invoice/<%=o.getId()%>" 
+											class="button gray">View Invoice</a>
+										</div>
+									</li>
+								<%} %>
+
+							</ul>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!-- Content / End -->
 				
+
 			</div>
 			<!-- Content / End -->
 		</div>

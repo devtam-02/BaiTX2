@@ -1,3 +1,5 @@
+<%@page import="com.devtam.DevShop.Entity.ProductImage"%>
+<%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.devtam.DevShop.Entity.Product"%>
 <%@page import="java.util.Set"%>
@@ -18,6 +20,8 @@
 <!-- CSS
 ================================================== -->
 <link rel="stylesheet"
+	href="<c:url value="/"/>assets/bootstrap-5.0.2-dist/css/bootstrap.min.css" />
+<link rel="stylesheet"
 	href="<c:url value="/"/>assets/listeo/css/style.css" />
 <link rel="stylesheet"
 	href="<c:url value="/"/>assets/listeo/css/main-color.css" id="colors" />
@@ -34,7 +38,7 @@
 		<header id="header-container" class="fixed fullwidth dashboard">
 			<!-- Header -->
 			<div id="header" class="not-sticky">
-				<div class="container">
+				<div class="container-fluid">
 					<!-- Left Side Content -->
 					<div class="left-side">
 						<!-- Logo -->
@@ -66,7 +70,7 @@
 							<div class="user-menu">
 								<div class="user-name">
 									<span>
-									<!-- <img src="<c:url value="/"/>assets/${session.admin.avatar}" alt="" /> -->
+									<img src="https://haycafe.vn/wp-content/uploads/2022/02/Avatar-trang-den.png" alt="">
 									</span>My Account
 								</div>
 								<ul>
@@ -117,7 +121,7 @@
 					</ul>
 
 					<ul data-submenu-title="Products">
-						<li><a href="<c:url value="/"/>admin/dashboard-myproducts"><i
+						<li><a href="<c:url value="/"/>admin/dashboard-myproduct"><i
 								class="sl sl-icon-layers"></i> My products</a></li>
 						<li class="active"><a
 							href="<c:url value="/"/>admin/dashboard-addproduct"><i
@@ -142,20 +146,62 @@
 	================================================== -->
 <%
 	Product product = (Product) request.getAttribute("product");	
-
+	List<ProductImage> images = (List) request.getAttribute("images");
 %>
 			<div class="dashboard-content">
-				<div class="row">
-					<div class="col-md-4" id="today" >
-
-    				</div>
-				    <div class="col-md-8 m-3" id="viewed-and-bought" >
-				
-				    </div>
+			<div class="container-fluid p-5">
+				<div class="row">					
+					<div class="col-4">
+						<div class="card mb-3 p-3">						  
+						  <div class="card-body">
+						    <h1 class="card-title"><%=product.getProduct_name() %></h5>
+						    <p class="card-text">Price: <%=product.getPrice() %> VNĐ</p>
+						    <p class="card-text"><%=product.getDescription() %></p>
+						    <p class="card-text"><small class="text-muted"><%=product.getCreate_at() %></small></p>
+						  </div>
+						  <div id="carouselExampleIndicators" class="carousel slide card-img-top" data-bs-ride="carousel">
+							  <div class="carousel-indicators">
+							    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+							    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+							    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+							  </div>
+							  <div class="carousel-inner">
+							  	<%if (images != null && images.size() > 0) {%>
+							    <div class="carousel-item active">
+							      <img src="<%=images.get(0).getUrl_image()%>" height="400px" style="object-fit: cover;" class="d-block w-100" alt="<%=product.getProduct_name()%>">
+							    </div>
+							    <%} else {%>
+							    <div class="carousel-item active">
+							      <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Ftongkhoalu.com%2Fcua-hang%2Falcorest-mau-trang-su-mau-ev3002&psig=AOvVaw3bLFsEpiZ1LQ8ar75h-p3T&ust=1703512901916000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCIC2xp6eqIMDFQAAAAAdAAAAABAD" height="400px" style="object-fit: cover;" class="d-block w-100" alt="<%=product.getProduct_name()%>">
+							    </div>
+									   	<%}%>
+								<%
+									if (images != null && images.size() > 1) {
+									for(int i = 1; i < images.size(); i++){
+								%>
+									<div class="carousel-item">
+							      <img src="<%=images.get(i).getUrl_image()%>" height="400px" style="object-fit: cover;" class="d-block w-100" alt="<%=product.getProduct_name()%>">
+							    </div>
+									<%}} %>
+							  </div>
+							  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+							    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							    <span class="visually-hidden">Previous</span>
+							  </button>
+							  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+							    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+							    <span class="visually-hidden">Next</span>
+							  </button>
+							</div>
+						</div>
 				</div>
-				<div class="row">
-					<div class="row">
+				<div class="col-8">				
+							<div class="row d-flex justify-content-center align-item-center mb-5" id="today" style="margin-left: 100px;">
+		
+		    				</div>
+						    <div class="row" id="viewed-and-bought" style="margin-left: 100px;">
 						
+						    </div>
 					</div>
 				</div>
 			</div>
@@ -168,6 +214,8 @@
 
 	<!-- Scripts
 ================================================== -->
+	<script type="text/javascript"
+		src="<c:url value="/"/>assets/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script>
 	<script type="text/javascript"
 		src="<c:url value="/"/>assets/scripts/jquery-3.6.0.min.js"></script>
 	<script type="text/javascript"
@@ -205,7 +253,7 @@
     var options = {
           series: [
       	  	{	<%int k = 20;%>
-            	name: "Lượt truy cập",            	
+            	name: "Lượt xem",            	
             	data: [<%=viewed.get(0)%>, <%=viewed.get(1)%>, <%=viewed.get(2)%>, 
             	<%=viewed.get(3)%>, <%=viewed.get(4)%>, <%=viewed.get(5)%>, <%=viewed.get(6)%>]
        	  	},
@@ -230,7 +278,7 @@
           curve: 'straight'
         },
         title: {
-          text: 'Tình hình tiêu thụ sản phẩm trong tuần qua',
+          text: 'Last week analysis',
           align: 'left'
         },
         grid: {
@@ -250,19 +298,24 @@
         var options = {
                 series: [<%=product.getSold()%>, <%=product.getQuantity() - product.getSold()%>, 0],
                 chart: {
-                width: 380,
+                width: 480,
                 type: 'pie',
               },
               title: {
-                  text: 'Hiện trạng sản phẩm',
-                  align: 'center'
+                  text: 'Condition of product',
+                  align: 'left',
+                  style: {
+                      fontSize: "20px",
+                      fontFamily: "Helvetica, Arial, sans-serif",
+                      fontWeight: "bold"
+                    }
                 },
-              labels: ['Sản phẩm đã bán', 'Sản phẩm còn lại','Hàng lỗi'],
+              labels: ['Bought product', 'Inventory product','Broken product'],
               responsive: [{
                 breakpoint: 480,
                 options: {
                   chart: {
-                    width: 200
+                    width: 300
                   },
                   legend: {
                     position: 'bottom'
