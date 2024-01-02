@@ -5,10 +5,13 @@ import com.devtam.DevShop.Connection.ConnectionPoolImpl;
 import com.devtam.DevShop.DTO.OrderDTO;
 import com.devtam.DevShop.DTO.UserDTO;
 import com.devtam.DevShop.Entity.Category;
+import com.devtam.DevShop.Entity.Order;
 import com.devtam.DevShop.Entity.Product;
 import com.devtam.DevShop.Entity.ProductImage;
+import com.devtam.DevShop.Entity.User;
 import com.devtam.DevShop.Process.CategoryProcess;
 import com.devtam.DevShop.Process.InteractProcesss;
+import com.devtam.DevShop.Process.OrderItemProcess;
 import com.devtam.DevShop.Process.OrderProccess;
 import com.devtam.DevShop.Process.ProductImageProcess;
 import com.devtam.DevShop.Process.ProductProcess;
@@ -16,7 +19,6 @@ import com.devtam.DevShop.Process.UserProcess;
 import com.devtam.DevShop.Process.Implement.CloudinaryProcess;
 import com.devtam.DevShop.Process.Implement.ProductProcessImpl;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +71,9 @@ public class AdminController{
 	
 	@Autowired
 	private OrderProccess orderProccess;
+	
+	@Autowired
+	private OrderItemProcess orderItemProcess;
 	
 	@Autowired
 	private UserProcess userProcess;
@@ -171,6 +176,57 @@ public class AdminController{
     	model.addAttribute("images", images);
     	
     	return "admin/dashboard_myproduct";
+    }
+    
+    @GetMapping("dashboard-orders")
+    public String dashboardOrders(HttpSession session, Model model) {
+
+    	int page = 0;
+    	int ordersPerPage = 5;
+    	if(session.getAttribute("Opage") == null || (int)session.getAttribute("Opage") < 0)
+    		session.setAttribute("Opage", page);
+    	else {
+    		page = (int) session.getAttribute("Opage");
+    	}
+    	
+    	int maxCount = orderProccess.countTotal();
+    	session.setAttribute("OmaxPage", (maxCount / ordersPerPage) + 1);
+    	
+    	ArrayList<Order> listOrders = orderProccess.getListOrders((0 + page * ordersPerPage), ordersPerPage);
+        model.addAttribute("listOrders", listOrders);
+        for(Order o : listOrders) System.out.println("Orders:" + o);
+        
+        HashMap<String, User> listUsers = new HashMap<String, User>();
+        for(Order item: listOrders) {
+        	User user = userProcess.getUserById(item.getUserId());
+        	if (user != null)
+        		listUsers.put(item.getUserId(), user);
+        	System.out.println("---key(" + item.getUserId() + "): " + user);
+        }
+        model.addAttribute("listUsers", listUsers);
+        
+        HashMap<Integer, ArrayList<Product>> listProducts = new HashMap<Integer, ArrayList<Product>>();
+        for(Order item: listOrders) {
+        	ArrayList<Product> products = orderItemProcess.getListProductByOrderId(item.getId());
+        	if (products != null)
+        		listProducts.put(item.getId(), products);
+        	System.out.println("key(" + item.getId() + "): " + products.size());
+        }
+        model.addAttribute("listProducts", listProducts);
+        
+        
+        
+        session.setAttribute("current-page", page);
+        session.setAttribute("Scategory", 0);
+        session.setAttribute("Spage", 0);
+    	return "admin/dashboard_orders";
+    }
+    @GetMapping("/dashboard-orders/{pageNum}")
+    public String shopViewPage(HttpSession session,
+    		@PathVariable("pageNum") int num)  
+    {
+    	session.setAttribute(")page", num);
+        return "redirect:/dashboard-orders";
     }
     @GetMapping("/dashboard-myproduct/{page}")
     public String dashboardMyproductPag(HttpSession session,@PathVariable("page") int page, Model model){

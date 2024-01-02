@@ -51,7 +51,6 @@ public class HomeController{
 	
     @GetMapping(value = {"/" ,"/home"})
     public String check(HttpSession session, Model model)  {
-//    	this.productProcess = new ProductProcessImpl();
         List<Product> products = productProcess.getListProducts("", (byte) 0, (byte)12);
         model.addAttribute("products", products);
 

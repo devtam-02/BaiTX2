@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.devtam.DevShop.Connection.ConnectionPool;
 import com.devtam.DevShop.Connection.ConnectionPoolImpl;
 import com.devtam.DevShop.DTO.UserDTO;
+import com.devtam.DevShop.Entity.User;
 import com.devtam.DevShop.Process.ProductProcess;
 import com.devtam.DevShop.Process.UserProcess;
 
@@ -106,6 +107,44 @@ public class UserProcessImpl implements UserProcess {
 					}
 				}
 		return items;
+	}
+
+	@Override
+	public User getUserById(String userId) {
+		String sql = "SELECT * FROM `user` WHERE id = ? ";
+		User item = new User();
+		//Biên dịch		
+				try {
+					PreparedStatement pre = this.con.prepareStatement(sql);
+					pre.setString(1, userId);
+					//Truyền giá trị cho tham số				
+					ResultSet rs = pre.executeQuery(); //Lấy về tập kết quả
+					if(rs != null) {
+						while(rs.next()) {
+							item.setId(userId);
+							item.setAvatar(rs.getString("avatar"));
+							item.setEmail(rs.getString("email"));
+							item.setLogin_Type(rs.getString("login_type"));
+							item.setPassword(rs.getString("password"));
+							item.setPhone_Number(rs.getString("phone_number"));
+							item.setRole(rs.getString("role"));
+							item.setUser_Name(rs.getString("user_name"));
+						}
+					}
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+					//trở về trạng thái an toàn của kết nối
+					try {
+						this.con.rollback();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+		return item;
 	}
 
 }

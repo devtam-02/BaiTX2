@@ -14,6 +14,7 @@ import com.devtam.DevShop.Connection.ConnectionPool;
 import com.devtam.DevShop.Connection.ConnectionPoolImpl;
 import com.devtam.DevShop.DTO.OrderDTO;
 import com.devtam.DevShop.DTO.UserDTO;
+import com.devtam.DevShop.Entity.Order;
 import com.devtam.DevShop.Process.OrderProccess;
 @Repository
 public class OrderProcessImpl implements OrderProccess {
@@ -140,6 +141,49 @@ public class OrderProcessImpl implements OrderProccess {
 							item.setDate(rs.getString("booking_date"));
 							item.setPrice(rs.getInt("total"));
 							item.setCustomerName(rs.getString("fullname"));
+							items.add(item);
+						}
+					}
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+					//trở về trạng thái an toàn của kết nối
+					try {
+						this.con.rollback();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+		return items;
+	}
+	public ArrayList<Order> getListOrders(int start, int limit){		
+		ArrayList<Order> items = new ArrayList<Order>();
+		String sql = "SELECT * FROM `order` ORDER BY booking_date DESC limit ?,?";
+		//Biên dịch		
+				try {
+					PreparedStatement pre = this.con.prepareStatement(sql);
+					//Truyền giá trị cho tham số		
+					pre.setInt(1, start);
+					pre.setInt(2, limit);
+					ResultSet rs = pre.executeQuery(); //Lấy về tập kết quả
+					if(rs != null) {
+						while(rs.next()) {
+							Order item = new Order();
+							item.setId(rs.getInt("id"));
+							item.setPayment_Method(rs.getString("payment_method"));
+							item.setBooking_Date(rs.getString("booking_date"));
+							item.setTotal(rs.getInt("total"));
+							item.setFullname(rs.getString("fullname"));
+							item.setEmail(rs.getString("email"));
+							item.setStatus(rs.getString("status"));
+							item.setNote(rs.getString("note"));
+							item.setCountry(rs.getString("country"));
+							item.setAddress(rs.getString("address"));
+							item.setPhone(rs.getString("phone"));
+							item.setUserId(rs.getString("user_id"));
 							items.add(item);
 						}
 					}
