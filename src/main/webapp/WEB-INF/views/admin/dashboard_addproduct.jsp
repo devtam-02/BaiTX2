@@ -64,7 +64,7 @@
 							<div class="user-menu">
 								<div class="user-name">
 									<span>
-									<!-- <img src="<c:url value="/"/>assets/${session.admin.avatar}" alt="" /> -->
+									<img src="https://haycafe.vn/wp-content/uploads/2022/02/Avatar-trang-den.png" alt="">
 									</span>My Account
 								</div>
 								<ul>

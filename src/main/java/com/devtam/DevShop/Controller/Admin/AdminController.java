@@ -2,6 +2,8 @@ package com.devtam.DevShop.Controller.Admin;
 
 import com.devtam.DevShop.Connection.ConnectionPool;
 import com.devtam.DevShop.Connection.ConnectionPoolImpl;
+import com.devtam.DevShop.DTO.OrderDTO;
+import com.devtam.DevShop.DTO.UserDTO;
 import com.devtam.DevShop.Entity.Category;
 import com.devtam.DevShop.Entity.Product;
 import com.devtam.DevShop.Entity.ProductImage;
@@ -10,9 +12,11 @@ import com.devtam.DevShop.Process.InteractProcesss;
 import com.devtam.DevShop.Process.OrderProccess;
 import com.devtam.DevShop.Process.ProductImageProcess;
 import com.devtam.DevShop.Process.ProductProcess;
+import com.devtam.DevShop.Process.UserProcess;
 import com.devtam.DevShop.Process.Implement.CloudinaryProcess;
 import com.devtam.DevShop.Process.Implement.ProductProcessImpl;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +70,41 @@ public class AdminController{
 	@Autowired
 	private OrderProccess orderProccess;
 	
+	@Autowired
+	private UserProcess userProcess;
+	
+	@GetMapping({"/dashboard"})
+	public String dashboardHome(Model model)  {
+    	int totalProduct = productProcess.countProduct(0);
+    	model.addAttribute("totalProduct", totalProduct);
+    	
+    	int totalOrder = orderProccess.countTotal();
+    	model.addAttribute("totalOrder", totalOrder);
+    	
+    	int totalUser = userProcess.countTotalUser();
+    	model.addAttribute("totalUser", totalUser);
+    	
+    	int totalCategory = categoryProcess.countTotalCategory();
+    	model.addAttribute("totalCategory", totalCategory);
+    	
+    	ArrayList<UserDTO> userDto = userProcess.getListUserForDashboard();
+    	model.addAttribute("userDto",userDto);
+    	
+    	ArrayList<OrderDTO> orderDTO = orderProccess.getListOrderDto();
+    	model.addAttribute("orderDTO",orderDTO);
+    	
+        return "admin/dashboard_home";
+    }
+	@GetMapping({"/home", "/"})
+	public String directHome()  {
+        return "redirect:/admin/dashboard";
+    }
+	@GetMapping("/dashboard/invoice/{id}")
+	public String viewInvoice(@PathVariable("id") int id)  {
+//		orderProccess;
+        return "admin/invoice";
+    }
+			
     @GetMapping(value = {"/dashboard-addproduct"})
     public String addProduct(HttpSession session)  {
     	Map<Integer, String> categories = categoryProcess.getListCategory();
@@ -114,7 +153,7 @@ public class AdminController{
     	if(session.getAttribute("page") == null)
     		session.setAttribute("page", 0);
     	model.addAttribute("page", 0);
-    	int maxCount = productProcess.countProduct();
+    	int maxCount = productProcess.countProduct(0);
     	session.setAttribute("maxPage", (maxCount / 10) + 1);
     	
     	Map<Integer, String> categories = categoryProcess.getListCategory();
@@ -130,7 +169,7 @@ public class AdminController{
     		images.put(p.getId(),str);
     	}
     	model.addAttribute("images", images);
-        
+    	
     	return "admin/dashboard_myproduct";
     }
     @GetMapping("/dashboard-myproduct/{page}")

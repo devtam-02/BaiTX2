@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 
 import com.devtam.DevShop.Connection.ConnectionPool;
 import com.devtam.DevShop.Connection.ConnectionPoolImpl;
+import com.devtam.DevShop.DTO.OrderDTO;
+import com.devtam.DevShop.DTO.UserDTO;
 import com.devtam.DevShop.Process.OrderProccess;
 @Repository
 public class OrderProcessImpl implements OrderProccess {
@@ -86,6 +88,75 @@ public class OrderProcessImpl implements OrderProccess {
 				
 		}
 		return sum;
+	}
+
+	@Override
+	public int countTotal() {		
+		int sum = 0;
+		
+		String sql = "SELECT count(*) as total FROM `order`";
+		//Biên dịch		
+				try {
+					PreparedStatement pre = this.con.prepareStatement(sql);
+					//Truyền giá trị cho tham số				
+					ResultSet rs = pre.executeQuery(); //Lấy về tập kết quả
+					if(rs != null) {
+						while(rs.next()) {
+							int x = 0;
+							x = rs.getInt("total");
+							sum = x;
+						}
+					}
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+					//trở về trạng thái an toàn của kết nối
+					try {
+						this.con.rollback();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+		return sum;
+	}
+
+	@Override
+	public ArrayList<OrderDTO> getListOrderDto() {
+		ArrayList<OrderDTO> items = new ArrayList<OrderDTO>();
+		String sql = "SELECT * FROM `order` ORDER BY booking_date DESC LIMIT 5 ";
+		//Biên dịch		
+				try {
+					PreparedStatement pre = this.con.prepareStatement(sql);
+					//Truyền giá trị cho tham số				
+					ResultSet rs = pre.executeQuery(); //Lấy về tập kết quả
+					if(rs != null) {
+						while(rs.next()) {
+							OrderDTO item = new OrderDTO();
+							item.setId(rs.getInt("id"));
+							item.setPaymentMethod(rs.getString("payment_method"));
+							item.setDate(rs.getString("booking_date"));
+							item.setPrice(rs.getInt("total"));
+							item.setCustomerName(rs.getString("fullname"));
+							items.add(item);
+						}
+					}
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+					//trở về trạng thái an toàn của kết nối
+					try {
+						this.con.rollback();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+		return items;
 	}
 
 }

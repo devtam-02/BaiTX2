@@ -7,4 +7,5 @@ import com.devtam.DevShop.Entity.Category;
 public interface CategoryProcess {
 	public Map<Integer, String> getListCategory();
 	public Category getCategoryById(int id);
+	public int countTotalCategory();
 }

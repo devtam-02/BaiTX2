@@ -33,6 +33,9 @@
 <link rel="stylesheet" href="<c:url value="/"/>assets/css/slicknav.min.css" type="text/css">
 <link rel="stylesheet" href="<c:url value="/"/>assets/css/style.css" type="text/css">
 
+<link rel="stylesheet" href="<c:url value="/"/>assets/listeo/css/main-color.css" id="colors" />
+<link rel="stylesheet" href="<c:url value="/"/>assets/listeo/css/style.css" />
+
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 
@@ -106,13 +109,13 @@
 			<div class="row">
 				<div class="col-lg-3 col-md-3">
 					<div class="header__logo">
-						<a href="#"><img src="<c:url value="/"/>assets/img/logo.png" alt=""></a>
+						<a href="<c:url value="/"/>home"><img src="<c:url value="/"/>assets/img/logo.png" alt=""></a>
 					</div>
 				</div>
 				<div class="col-lg-6 col-md-6">
 					<nav class="header__menu mobile-menu">
 						<ul>
-							<li><a href="home">Home</a></li>
+							<li><a href="<c:url value="/"/>home">Home</a></li>
 							<li class="active"><a href="shop">Shop</a></li>
 							<li><a href="#">Pages</a>
 								<ul class="dropdown">
@@ -151,7 +154,7 @@
 					<div class="breadcrumb__text">
 						<h4>Shop</h4>
 						<div class="breadcrumb__links">
-							<a href="home">Home</a> <span>Shop</span>
+							<a href="<c:url value="/"/>home">Home</a> <span>Shop</span>
 						</div>
 					</div>
 				</div>
@@ -187,12 +190,12 @@
 											<div class="shop__sidebar__categories">
 												<ul class="nice-scroll">	
 														<%
-														HashMap<Integer, String> categories = (HashMap) session.getAttribute("categories");
+														HashMap<Integer, String> categories = (HashMap) request.getAttribute("categories");
 														if(categories != null) {
 														Set<Integer> keySet = categories.keySet();
 														for (Integer key : keySet) {
 												         %>												
-														<li><a href="category/<%=key%>"><%=categories.get(key)%></a></li>
+														<li><a href="shop/<%=key%>/0"><%=categories.get(key)%></a></li>
 														
 														<% }} %>
 												</ul>
@@ -331,9 +334,9 @@
 						</div>
 					</div>
 					<div class="row">
-							<%List<Product> productList = (List) session.getAttribute("products"); %>
+							<%List<Product> productList = (List) request.getAttribute("products"); %>
 							<%
-							Map<Integer, List<ProductImage>> productImages = (Map) session.getAttribute("productImages");
+							Map<Integer, List<ProductImage>> productImages = (Map) request.getAttribute("productImages");
 							
 					        	if(productList != null)	{	
 							%>
@@ -378,17 +381,41 @@
 						<%}}%>
 							
 					</div>
+					<!-- Pagination -->
+					<div class="clearfix"></div>
+					
 					<div class="row">
-						<div class="col-lg-12">
-							<div class="product__pagination">
-								<a href="shop/1"> << </a> 
-								<a href="shop/2"> < </a> 
-								<a class="active" href="shop/3">1</a> 
-								<a href="shop/4"> > </a> 
-								<a href="shop/5"> >> </a>
+						<div class="col-md-12">
+							<div class="pagination-container margin-top-20 margin-bottom-40">
+								<nav class="pagination">
+									<%
+									int catId = (int)session.getAttribute("current-category"); 
+									int maxPage = (int)session.getAttribute("SmaxPage"); 
+									int numPage = (int)session.getAttribute("current-page");
+									%>
+									<ul style="width: 100%">									
+										<li>
+											<%if(numPage > 0) {%>
+											<a href="<c:url value="/"/>shop/<%=catId%>/<%=numPage-1%>"><i
+												class="sl sl-icon-arrow-left"></i></a>
+											<%} %>
+										</li>										
+										<li> 
+											<a href="" class="current-page" ><%=numPage + 1%></a>
+										</li>
+										
+										<li><%if(numPage < maxPage) {%>
+											<a href="<c:url value="/"/>shop/<%=catId%>/<%=numPage+1%>"><i
+												class="sl sl-icon-arrow-right"></i></a>
+											<%} %>	
+										</li>
+									</ul>
+									
+								</nav>
 							</div>
 						</div>
 					</div>
+					<!-- Pagination / End -->
 					
 				</div>
 			</div>
@@ -492,6 +519,8 @@
 	<script src="<c:url value="/"/>assets/js/mixitup.min.js"></script>
 	<script src="<c:url value="/"/>assets/js/owl.carousel.min.js"></script>
 	<script src="<c:url value="/"/>assets/js/main.js"></script>
+	
+	
 </body>
 
 </html>
